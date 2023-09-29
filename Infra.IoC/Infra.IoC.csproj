@@ -10,6 +10,7 @@
     <ProjectReference Include="..\Application\Application.csproj" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
     <ProjectReference Include="..\Infra.Commons\Infra.Commons.csproj" />
+    <ProjectReference Include="..\Data.MongoDB\Data.MongoDB.csproj" />
   </ItemGroup>
 
 </Project>
