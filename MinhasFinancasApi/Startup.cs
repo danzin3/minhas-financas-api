@@ -1,27 +1,29 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using MinhasFinancasApi.Configs;
 
 namespace MinhasFinancasApi
 {
     public class Startup
     {
         public IConfiguration Configuration { get; }
-        private readonly IWebHostEnvironment _env;
-        public Startup(IConfiguration configuration, IWebHostEnvironment env)
+        public EnvVariables EnvVar { get; }
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            _env = env;
+            EnvVar = new EnvVariables(Configuration);
         }
 
         /**
          * Método utilizado para configurar e registrar serviços que serão usados em todo o aplicativo
          * como serviço de banco de dados, autenticação, mensageria dentre outros.
-         * Os serviços configurados aqui estarão disponíveis para serem injetados em todo
-         * o projeto por meio do mecanismo de injeção de dependência do ASP.NET Core.
          */
         public void ConfigureServices(IServiceCollection services) {
 
-            services.AddControllers();
+            services.AddSingleton<EnvVariables>();
 
+            services.ConfigCoorsStartup(EnvVar);
+
+            services.AddControllers();
+            
             services.AddEndpointsApiExplorer();
 
             services.AddHttpContextAccessor();
@@ -33,7 +35,6 @@ namespace MinhasFinancasApi
 
         /**
          * Método usado para configurar como o aplicativo lida com solicitações HTTP.
-         * Cada método chamado pelo parâmetro 'app' adiciona um middleware específico ao pipeline.
          */
         public void Configure(WebApplication app) {
 
@@ -41,6 +42,8 @@ namespace MinhasFinancasApi
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.ConfigHttpMiddlewares(EnvVar);
 
             app.UseHttpsRedirection();
 

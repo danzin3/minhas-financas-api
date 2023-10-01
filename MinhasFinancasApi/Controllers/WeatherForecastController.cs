@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using MinhasFinancasApi.Configs;
 
 namespace MinhasFinancasApi.Controllers
 {
@@ -12,10 +13,12 @@ namespace MinhasFinancasApi.Controllers
     };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly EnvVariables _env;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, EnvVariables env)
         {
             _logger = logger;
+            _env = env;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
@@ -25,7 +28,8 @@ namespace MinhasFinancasApi.Controllers
             {
                 Date = DateTime.Now.AddDays(index),
                 TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+                Summary = Summaries[Random.Shared.Next(Summaries.Length)],
+                Value = _env.CorsOptions.Origins
             })
             .ToArray();
         }
