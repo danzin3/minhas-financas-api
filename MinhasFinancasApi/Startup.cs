@@ -1,4 +1,5 @@
 ﻿using MinhasFinancasApi.Configs;
+using Microsoft.AspNetCore.CookiePolicy;
 
 namespace MinhasFinancasApi
 {
@@ -22,6 +23,13 @@ namespace MinhasFinancasApi
 
             services.ConfigCoorsStartup(EnvVar);
 
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.Secure = CookieSecurePolicy.Always;
+                options.HttpOnly = HttpOnlyPolicy.Always;
+                options.MinimumSameSitePolicy = SameSiteMode.Strict;
+            });
+
             services.AddControllers();
             
             services.AddEndpointsApiExplorer();
@@ -37,19 +45,7 @@ namespace MinhasFinancasApi
          * Método usado para configurar como o aplicativo lida com solicitações HTTP.
          */
         public void Configure(WebApplication app) {
-
-            if (app.Environment.IsDevelopment()) {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-
             app.ConfigHttpMiddlewares(EnvVar);
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-            app.MapControllers();
         }
 
         private static void RegisterServices(IServiceCollection services) {
